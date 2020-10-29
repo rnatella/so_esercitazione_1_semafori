@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/shm.h>
+
+#include "buffer.h"
+
+int main()
+{
+    printf("[%d] Avvio scrittore\n", getpid());
+
+
+
+    key_t chiave_shm = /* TBD: Definire una chiave */
+
+    int shm_id = /* TBD: Acquisire la memoria condivisa (allocata dal padre) */
+
+    if(shm_id < 0) {
+        perror("Errore creazione shared memory");
+        exit(1);
+    }
+
+    buffer * b = /* TBD: Ottenere un puntatore alla memoria condivisa */
+
+    if(b == (void*)-1) {
+        perror("Errore attach shared memory");
+        exit(1);
+    }
+
+
+    key_t sem_chiave = /* TBD: Definire una chiave */
+
+    int sem_id = /* TBD: Acquisire il vettore di semafori (allocato dal padre) */
+
+    if (sem_id < 0)
+    {
+        perror("Errore semget()");
+        exit(1);
+    }
+
+
+    srand(getpid());
+
+    for(int i=0; i<5; i++) {
+
+        int val_1 = rand() % 10;
+        int val_2 = rand() % 10;
+
+        scrivi_buffer(b, sem_id, val_1, val_2);
+    }
+
+
+
+    return 0;
+
+}
