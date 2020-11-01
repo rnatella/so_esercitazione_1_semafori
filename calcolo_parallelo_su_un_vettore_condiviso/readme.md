@@ -15,7 +15,7 @@ lavorare sui primi 1000 elementi; il secondo figlio sui secondi 1000
 elementi; etc. Ogni figlio dovrà cercare il valore minimo all'interno
 dalla porzione di vettore assegnatagli.
 
-**Prima versione dell'esercizio.** Il processo padre e i figli dovranno
+**PRIMA VERSIONE DELL'ESERCIZIO.** Il processo padre e i figli dovranno
 inoltre condividere in **mutua esclusione** un buffer, atto a contenere
 un singolo valore intero, utilizzando **una area di memoria condivisa e
 semafori UNIX**. Al termine della ricerca, il processo figlio dovrà
@@ -30,9 +30,10 @@ File da modificare:
 - processi-mutua-esclusione.c
 
 Compilare con: `make minimo-mutua-esclusione`
+
 Eseguire con: `./minimo-mutua-esclusione`
 
-**Seconda versione dell'esercizio.** Si svolga inoltre una versione
+**SECONDA VERSIONE DELL'ESERCIZIO.** Si svolga inoltre una versione
 alternativa di questo esercizio, utilizzando lo schema
 **produttore-consumatore con buffer singolo**, utilizzando anche questa
 volta **una area di memoria condivisa e semafori UNIX**. Ogni processo
@@ -47,6 +48,7 @@ File da modificare:
 - processi-prod-cons.c
 
 Compilare con: `make minimo-prod-cons`
+
 Eseguire con: `./minimo-prod-cons`
 
 ![image](https://github.com/rnatella/esercizi_linux/blob/master/images/ambiente_globale/produttore_consumatore/calcolo_parallelo_su_un_vettore_condiviso.png)

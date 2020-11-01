@@ -20,3 +20,13 @@ clean:
 	rm -f *.o
 	rm -f minimo-mutua-esclusione
 	rm -f minimo-prod-cons
+
+test: test-mutua-esclusione test-prod-cons
+
+test-mutua-esclusione: minimo-mutua-esclusione
+	./minimo-mutua-esclusione >/tmp/minimo-mutua-esclusione.out 2>&1
+	diff -q /tmp/minimo-mutua-esclusione.out test.txt
+
+test-prod-cons: minimo-prod-cons
+	./minimo-prod-cons >/tmp/minimo-prod-cons.out 2>&1
+	diff -q /tmp/minimo-prod-cons.out test.txt
