@@ -81,5 +81,5 @@ void padre(int *buffer,
 
     /* Risultato finale */
 
-    printf("Il valore minimo è: %d\n", *buffer);
+    printf("Il valore minimo è: %d\n", minimo);
 }

@@ -38,7 +38,7 @@ int main()
 
     /* Inizializza il vettore con numeri casuali tra 0 e INT_MAX */
 
-    srand(time(NULL));
+    srand(12345);
 
     for (int i = 0; i < NUM_ELEMENTI; i++)
     {

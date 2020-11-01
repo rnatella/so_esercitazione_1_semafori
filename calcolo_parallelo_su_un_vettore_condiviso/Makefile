@@ -1,5 +1,3 @@
-all: minimo-mutua-esclusione minimo-prod-cons
-
 minimo-mutua-esclusione: main.o processi-mutua-esclusione.o semafori.o
 	gcc -o minimo-mutua-esclusione  main.o processi-mutua-esclusione.o semafori.o
 
