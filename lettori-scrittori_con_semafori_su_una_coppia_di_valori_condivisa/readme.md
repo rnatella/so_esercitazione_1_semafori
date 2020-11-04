@@ -24,4 +24,13 @@ processi figli, ciascuno dei quali eseguirà uno degli altri eseguibili;
 (2) un eseguibile per il codice dei lettori; (3) un eseguibile per il
 codice dello scrittore.
 
+File da modificare:
+- main\_padre.c
+- main\_scrittore.c
+- main\_lettori.c
+- buffer.c
+- buffer.h
+
+
+
 ![image](https://github.com/rnatella/esercizi_linux/blob/master/images/ambiente_globale/lettori_scrittori/lettori-scrittori_con_semafori_su_una_coppia_di_valori_condivisa.png)
