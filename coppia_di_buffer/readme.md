@@ -25,4 +25,11 @@ processi figli, ciascuno dei quali eseguirà ognuno degli altri due
 eseguibili; (2) un eseguibile per il codice del consumatore; (3) un
 eseguibile per il codice del produttore.
 
+File da modificare:
+- main-padre.c
+- main-produttore.c
+- main-consumatore.c
+- buffer.c
+
+
 ![image](https://github.com/rnatella/esercizi_linux/blob/master/images/ambiente_globale/produttore_consumatore/coppia_di_buffer.png)
