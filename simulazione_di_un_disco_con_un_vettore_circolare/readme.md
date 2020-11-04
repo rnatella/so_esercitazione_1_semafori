@@ -31,13 +31,18 @@ automatica). Lo **Schedulatore** termina dopo aver servito 25 richieste
 provenienti dai processi **Utente**.
 
 Si sincronizzi l'accesso alla coda circolare e ai relativi puntatori
-`testa` e `coda` tramite **semafori UNIX**. In una versione alternativa
-dell'esercizio, si sincronizzino gli accessi attraverso il costrutto
-**Monitor di Hoare**.
+`testa` e `coda` tramite **semafori UNIX**.
 
 I processi **Utente** e **Schedulatore** sono generati da un unico
 programma principale attraverso la primitiva `fork()`. Una volta
 generati i processi, il programma principale ne attende la terminazione
 e termina a sua volta.
+
+File da modificare:
+
+- main.c
+- coda\_richieste.h
+- coda\_richieste.c
+
 
 ![image](https://github.com/rnatella/esercizi_linux/blob/master/images/ambiente_globale/produttore_consumatore/simulazione_di_un_disco_con_un_vettore_circolare.png)
