@@ -52,6 +52,8 @@ void figlio(int *vettore,
         }
     }
 
+    printf("Figlio: Il minimo locale è %d\n", minimo);
+
     *buffer = minimo;
 
 }
@@ -81,5 +83,5 @@ void padre(int *buffer,
 
     /* Risultato finale */
 
-    printf("Il valore minimo è: %d\n", minimo);
+    printf("Padre: Il valore minimo assoluto è: %d\n", minimo);
 }
