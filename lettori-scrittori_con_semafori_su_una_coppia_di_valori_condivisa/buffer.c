@@ -18,7 +18,7 @@ void leggi_buffer(buffer * b, int sem_id, int *val_1, int *val_2) {
     *val_2 = b->val_2;
 
 
-    printf("[%d] Fine scrittura\n", getpid());
+    printf("[%d] Fine lettura\n", getpid());
 
     /* TBD: Fine lettura */
 }
