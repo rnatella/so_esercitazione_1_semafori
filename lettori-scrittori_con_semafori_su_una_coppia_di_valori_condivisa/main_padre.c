@@ -60,7 +60,7 @@ int main() {
 
         printf("[%d] Creazione processo lettore\n", getpid());
 
-        /* TBD: Creare un processo lettore, ed eseguire "main_scrittori" */
+        /* TBD: Creare un processo lettore, ed eseguire "main_lettori" */
     }
 
 
