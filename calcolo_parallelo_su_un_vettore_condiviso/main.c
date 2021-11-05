@@ -19,8 +19,8 @@ int main()
     int *vettore;
     int *buffer;
 
-    vett_id = /* TBD: usare shmget() per creare un vettore di interi su 
-               *      memoria condivisa, con NUM_INTERI elementi */
+    vett_id = /* TBD: usare shmget() per creare un vettore di interi su
+               *      memoria condivisa, di lunghezza pari a NUM_ELEMENTI */
 
     if (vett_id < 0)
     {
@@ -82,7 +82,7 @@ int main()
 
     /* TBD: creare 10 processi figli, ognuno dei quali dovrà eseguire
      *      la funzione "figlio()". Alla funzione, passare come parametri:
-     *      - il puntatore al vettore 
+     *      - il puntatore al vettore
      *      - il puntatore al buffer singolo
      *      - l'ID del vettore di semafori
      *      - l'indice del primo elemento da elaborare
