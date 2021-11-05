@@ -6,11 +6,11 @@
 void produzione(int sem_id, buffer *buf1, buffer *buf2, int valore)
 {
 
-    /* TBD: Inizio produzione */
+    /* TBD: Sincronizzazione per inizio produzione */
 
     if (buf1->stato == /* TBD */)
     {
-        /* TBD: Inizio produzione */
+        /* TBD: Porre il buffer 1 nello stato "in uso" */
 
         printf("[%d] In produzione su buf1...\n", getpid());
 
@@ -18,7 +18,7 @@ void produzione(int sem_id, buffer *buf1, buffer *buf2, int valore)
 
         buf1->valore = valore;
 
-        /* TBD: Fine produzione */
+        /* TBD: Porre il buffer 1 nello stato "occupato" */
 
         printf("[%d] Prodotto il valore %d su buf1\n", getpid(), valore);
     }
@@ -26,12 +26,12 @@ void produzione(int sem_id, buffer *buf1, buffer *buf2, int valore)
     {
 
         /* se il programma è arrivato a questo punto, vi
-         * deve essere almeno uno spazio disponibile, e 
+         * deve essere almeno uno spazio disponibile, e
          * quello spazio non è in "buf1", per cui "buf2"
          * è necessariamente libero.
          */
 
-        /* TBD: Inizio produzione */
+        /* TBD: Porre il buffer 2 nello stato "in uso" */
 
         printf("[%d] In produzione su buf2...\n", getpid());
 
@@ -39,13 +39,13 @@ void produzione(int sem_id, buffer *buf1, buffer *buf2, int valore)
 
         buf2->valore = valore;
 
-        /* TBD: Fine produzione */
+        /* TBD: Porre il buffer 2 nello stato "occupato" */
 
         printf("[%d] Prodotto il valore %d su buf2\n", getpid(), valore);
 
     }
 
-    /* TBD: Fine produzione */
+    /* TBD: Sincronizzazione per fine produzione */
 }
 
 int consumazione(int sem_id, buffer *buf1, buffer *buf2)
@@ -53,12 +53,12 @@ int consumazione(int sem_id, buffer *buf1, buffer *buf2)
 
     int valore;
 
-    /* TBD: Inizio consumazione */
+    /* TBD: Sincronizzazione per inizio consumazione */
 
 
     if (buf1->stato == /* TBD */)
     {
-        /* TBD: Inizio consumazione */
+        /* TBD: Porre il buffer 1 nello stato "in uso" */
 
         printf("[%d] In consumazione su buf1...\n", getpid());
 
@@ -66,7 +66,7 @@ int consumazione(int sem_id, buffer *buf1, buffer *buf2)
 
         valore = buf1->valore;
 
-        /* TBD: Fine consumazione */
+        /* TBD: Porre il buffer 1 nello stato "libero" */
 
         printf("[%d] Consumato il valore %d su buf1\n", getpid(), valore);
 
@@ -74,12 +74,12 @@ int consumazione(int sem_id, buffer *buf1, buffer *buf2)
     else
     {
         /* se il programma è arrivato a questo punto, vi
-         * deve essere almeno un messaggio disponibile, e 
+         * deve essere almeno un messaggio disponibile, e
          * quel messaggio non è in "buf1", per cui "buf2"
          * è necessariamente occupato.
          */
 
-        /* TBD: Inizio consumazione */
+        /* TBD: Porre il buffer 2 nello stato "in uso" */
 
         printf("[%d] In consumazione su buf2...\n", getpid());
 
@@ -87,13 +87,13 @@ int consumazione(int sem_id, buffer *buf1, buffer *buf2)
 
         valore = buf2->valore;
 
-        /* TBD: Fine consumazione */
+        /* TBD: Porre il buffer 2 nello stato "libero" */
 
         printf("[%d] Consumato il valore %d su buf2\n", getpid(), valore);
 
     }
 
-    /* TBD: Fine consumazione */
+    /* TBD: Sincronizzazione per fine consumazione */
 
     return valore;
 }
