@@ -15,7 +15,7 @@ intero casuale tra 0 e 19):
 
 
     typedef struct {
-        unsigned int posizione;
+        int posizione;
         pid_t processo;
     } richiesta;
 
