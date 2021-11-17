@@ -25,6 +25,6 @@ typedef struct
 coda_richieste * inizializza_coda();
 void preleva_richiesta(coda_richieste *c, richiesta * r);
 void inserisci_richiesta(coda_richieste *c, richiesta * r);
-void *rimuovi_coda(coda_richieste *c);
+void rimuovi_coda(coda_richieste *c);
 
 #endif

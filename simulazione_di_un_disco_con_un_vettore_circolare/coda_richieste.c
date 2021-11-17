@@ -41,7 +41,7 @@ coda_richieste *inizializza_coda()
         exit(1);
     }
 
-    
+
     /* TBD: Inizializzazione shared memory */
 }
 
@@ -56,7 +56,7 @@ void preleva_richiesta(coda_richieste *c, richiesta *r)
     r->posizione = /* TBD */;
     r->processo = /* TBD */;
 
-    
+
     /* TBD: Fine consumazione */
 }
 
@@ -73,7 +73,7 @@ void inserisci_richiesta(coda_richieste *c, richiesta *r)
     /* TBD: Fine produzione */
 }
 
-void *rimuovi_coda(coda_richieste *c)
+void rimuovi_coda(coda_richieste *c)
 {
     semctl(c->sem_id, 0, IPC_RMID);
     shmctl(c->shm_id, IPC_RMID, NULL);
