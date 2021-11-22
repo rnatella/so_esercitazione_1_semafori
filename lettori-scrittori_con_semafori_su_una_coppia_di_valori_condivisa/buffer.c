@@ -10,7 +10,7 @@ void leggi_buffer(buffer * b, int sem_id, int *val_1, int *val_2) {
     /* TBD: Inizio lettura */
 
 
-    printf("[%d] Lettura buffer: val1=%d, val2=%d\n", getpid(), b->val_1, b->val_2);
+    printf("[%d] Lettura in corso: val1=%d, val2=%d\n", getpid(), b->val_1, b->val_2);
 
     sleep(1);
 
@@ -28,9 +28,9 @@ void scrivi_buffer(buffer *b, int sem_id, int val_1, int val_2) {
     printf("[%d] Inizio scrittura\n", getpid());
 
     /* TBD: Inizio scrittura */
-    
 
-    printf("[%d] Scrittura buffer: val1=%d, val2=%d\n", getpid(), val_1, val_2);
+
+    printf("[%d] Scrittura in corso: val1=%d, val2=%d\n", getpid(), val_1, val_2);
 
     sleep(2);
 

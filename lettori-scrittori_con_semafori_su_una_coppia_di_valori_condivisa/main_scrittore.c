@@ -43,6 +43,8 @@ int main()
 
     for(int i=0; i<5; i++) {
 
+        sleep(1);
+
         int val_1 = rand() % 10;
         int val_2 = rand() % 10;
 
