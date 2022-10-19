@@ -8,17 +8,20 @@ void produzione(int sem_id, buffer *buf1, buffer *buf2, int valore)
 
     buffer * buf;
 
-    /* TBD: Sincronizzazione per inizio produzione */
+
+    /* TBD: Il produttore deve attendere che almeno un buffer sia libero,
+     *      mediante semaforo */
 
 
-    /* TBD: Completare la ricerca del buffer LIBERO */
 
-    /* NOTA: Nel caso ci fossero stati più di un produttore,
-     * sarebbe necessario qui usare la mutua esclusione
-     * (MUTEX_P) per cerca il buffer LIBERO
+    /* TBD: Completare il codice che segue, per
+     *      sceglire un buffer "LIBERO" (buf1 oppure buf2)
+     *
+     * NOTA: Non è necessario aggiungere qui la mutua esclusione
+     * (MUTEX_P), poiché vi è un solo processo produttore
      */
 
-    if (buf1->stato == /* TBD */)
+    if (buf1->stato == /* TBD: il buf1 è libero */)
     {
         printf("[%d] In produzione su buf1...\n", getpid());
 
@@ -33,7 +36,6 @@ void produzione(int sem_id, buffer *buf1, buffer *buf2, int valore)
 
     buf->stato = /* TBD: Porre il buffer nello stato "in uso" */;
 
-    /* FINE RICERCA DEL BUFFER LIBERO */
 
 
 
@@ -41,13 +43,13 @@ void produzione(int sem_id, buffer *buf1, buffer *buf2, int valore)
 
     buf->valore = valore;
 
-    /* TBD: Porre il buffer nello stato "occupato" */
+    buf->stato = /* TBD: Porre il buffer nello stato "occupato" */;
 
     printf("[%d] Prodotto il valore %d\n", getpid(), valore);
 
 
 
-    /* TBD: Sincronizzazione per fine produzione */
+    /* TBD: Ri-attivare il consumatore, che è in attesa di un elemento da consumare */
 }
 
 int consumazione(int sem_id, buffer *buf1, buffer *buf2)
@@ -57,17 +59,20 @@ int consumazione(int sem_id, buffer *buf1, buffer *buf2)
 
     int valore;
 
-    /* TBD: Sincronizzazione per inizio consumazione */
+
+    /* TBD: Il consumatore deve attendere che almeno un buffer sia occupato,
+     *      mediante semaforo */
 
 
-    /* TBD: Completare la ricerca del buffer OCCUPATO */
 
-    /* NOTA: Nel caso ci fossero stati più di un consumatore,
-     * sarebbe necessario qui usare la mutua esclusione
-     * (MUTEX_C) per cerca il buffer OCCUPATO
+    /* TBD: Completare il codice che segue, per
+     *      sceglire un buffer "OCCUPATO" (buf1 oppure buf2)
+     *
+     * NOTA: Non è necessario aggiungere qui la mutua esclusione
+     * (MUTEX_C), poiché vi è un solo processo consumatore
      */
 
-    if (buf1->stato == /* TBD */)
+    if (buf1->stato == /* TBD: il buf1 è occupato */)
     {
         printf("[%d] In consumazione su buf1...\n", getpid());
 
@@ -82,21 +87,19 @@ int consumazione(int sem_id, buffer *buf1, buffer *buf2)
 
     buf->stato = /* TBD: Porre il buffer nello stato "in uso" */;
 
-    /* FINE RICERCA DEL BUFFER OCCUPATO */
-
 
 
     sleep(2);
 
     valore = buf->valore;
 
-    /* TBD: Porre il buffer nello stato "libero" */
+    buf->stato = /* TBD: Porre il buffer nello stato "libero" */;
 
     printf("[%d] Consumato il valore %d\n", getpid(), valore);
 
 
+    /* TBD: Ri-attivare il produttore, che è in attesa di un buffer libero */
 
-    /* TBD: Sincronizzazione per fine consumazione */
 
     return valore;
 }

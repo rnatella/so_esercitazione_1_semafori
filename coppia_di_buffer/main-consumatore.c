@@ -15,7 +15,7 @@ int main()
     buffer *buf2;
     int sem_id;
 
-    buf1_id = /* TBD: Acquisizione shared memory buffer singolo */
+    buf1_id = /* TBD: Acquisizione shared memory del primo buffer (SENZA CREAZIONE) */
 
     if (buf1_id < 0)
     {
@@ -23,7 +23,7 @@ int main()
         exit(1);
     }
 
-    buf2_id = /* TBD: Acquisizione shared memory buffer singolo */
+    buf2_id = /* TBD: Acquisizione shared memory del secondo buffer (SENZA CREAZIONE) */
 
     if (buf2_id < 0)
     {
@@ -31,15 +31,9 @@ int main()
         exit(1);
     }
 
-    sem_id = /* TBD: Acquisizione vettore semafori */
 
-    if (sem_id < 0)
-    {
-        perror("Errore accesso semafori");
-        exit(1);
-    }
 
-    buf1 = /* TBD: Attach shared memory */
+    buf1 = /* TBD: Attach shared memory del primo buffer */
 
     if (buf1 == (void *)-1)
     {
@@ -47,11 +41,21 @@ int main()
         exit(1);
     }
 
-    buf2 = /* TBD: Attach shared memory */
+    buf2 = /* TBD: Attach shared memory del secondo buffer */
 
     if (buf2 == (void *)-1)
     {
         perror("Errore attach SHM buf2");
+        exit(1);
+    }
+
+
+
+    sem_id = /* TBD: Acquisizione vettore semafori (SENZA CREAZIONE NÈ INIZIALIZZAZIONE) */
+
+    if (sem_id < 0)
+    {
+        perror("Errore accesso semafori");
         exit(1);
     }
 
