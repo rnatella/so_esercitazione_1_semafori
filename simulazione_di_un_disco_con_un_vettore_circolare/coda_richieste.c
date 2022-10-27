@@ -43,6 +43,9 @@ coda_richieste *inizializza_coda()
 
 
     /* TBD: Inizializzazione shared memory */
+
+
+    return c;
 }
 
 void preleva_richiesta(coda_richieste *c, richiesta *r)
