@@ -1,1 +1,12 @@
+*.o
+.vscode
 .DS_Store
+minimo-mutua-esclusione
+minimo-prod-cons
+main-padre
+main-consumatore
+main-produttore
+main_padre
+main_lettori
+main_scrittore
+programma
