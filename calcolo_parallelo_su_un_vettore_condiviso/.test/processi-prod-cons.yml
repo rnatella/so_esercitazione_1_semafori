@@ -1,0 +1,203 @@
+rules:
+  - id: wait-signal-utilizzo
+    message: "È richiesta la sincronizzazione sia nel processo padre sia nei processi figli. Inserire le funzioni Wait_Sem() e Signal_Sem() nei punti necessari alla sincronizzazione."
+    severity: ERROR
+    languages: [c]
+    pattern-either:
+      - patterns:
+        - pattern: |
+            void figlio(...) {
+              ...
+            }
+        - pattern-not: |
+            void figlio(...) {
+              ...
+              Wait_Sem(...);
+              ...
+              Signal_Sem(...);
+              ...
+            }
+      - patterns:
+        - pattern: |
+            void padre(...) {
+              ...
+            }
+        - pattern-not: |
+            void padre(...) {
+              ...
+              Wait_Sem(...);
+              ...
+              Signal_Sem(...);
+              ...
+            }
+
+  - id: wait-signal-produttore
+    message: "Il produttore deve effettuare la sincronizzazione solo per l'accesso a dati condivisi
+    (in questo caso, la scrittura della variabile *buffer).
+    Ad esempio, non è corretto includere il ciclo FOR nel codice della sincronizzazione (opera su dati locali, non condivisi).
+    Per correggere l'esercizio, è necessario utilizzare le funzioni Wait_Sem() e Signal_Sem() subito prima e subito dopo la scrittura della variabile *buffer."
+    severity: ERROR
+    languages: [c]
+    patterns:
+      - pattern: |
+          void figlio(...){
+            ...
+            Wait_Sem(...);
+            ...
+            Signal_Sem(...);
+            ...
+          }
+      - pattern-not: |
+          void figlio(...){
+            ...
+            for(int i = elemento_iniziale; i < elemento_iniziale + qta_elementi; i++) {
+              ...
+            }
+            ...
+            Wait_Sem(...);
+            ...
+            *buffer = minimo;
+            ...
+            Signal_Sem(...);
+            ...
+          }
+
+  - id: wait-signal-consumatore
+    message: "Il consumatore deve effettuare la sincronizzazione solo per l'accesso a dati condivisi
+    (in questo caso, la lettura della variabile *buffer).
+    Ad esempio, non è corretto includere anche il ciclo FOR nel codice della sincronizzazione.
+    Per correggere l'esercizio, è necessario utilizzare le funzioni Wait_Sem() e Signal_Sem() subito prima e subito dopo
+    lo IF all'interno del ciclo FOR, senza includere la condizione del FOR."
+    severity: ERROR
+    languages: [c]
+    patterns:
+      - pattern: |
+          void padre(...){
+            ...
+            Wait_Sem(...);
+            ...
+            Signal_Sem(...);
+            ...
+          }
+      - pattern-not: |
+          void padre(...){
+            ...
+            for(int i = 0; i < NUM_PROCESSI; i++) {
+              ...
+              Wait_Sem(...);
+              if( *buffer < minimo ) {
+                ...
+                minimo = *buffer;
+                ...
+              }
+              Signal_Sem(...);
+            }
+            ...
+          }
+
+  - id: inizializzazione-semafori-errata
+    message: "Inizializzazione dei semafori mancante o errata.
+    Controllare che la funzione semctl() sia stata utilizzata correttamente."
+    severity: ERROR
+    languages: [c]
+    patterns:
+      - pattern: |
+          int inizializza_semafori() {
+              ...
+          }
+
+      - pattern-not: |
+          int inizializza_semafori()
+          {
+            $SEM_ID = semget(...,2,...);
+            ...
+            semctl($SEM_ID,...,SETVAL,0);
+            semctl($SEM_ID,...,SETVAL,1);
+            ...
+            return $SEM_ID;
+          }
+      - pattern-not: |
+          int inizializza_semafori()
+          {
+            $SEM_ID = semget(...,2,...);
+            ...
+            semctl($SEM_ID,...,SETVAL,1);
+            semctl($SEM_ID,...,SETVAL,0);
+            ...
+            return $SEM_ID;
+          }
+
+  - id: uso-semafori-produttore
+    message: "Errato utilizzo dei semafori. È necessario che il produttore effettui Wait_Sem() sul semaforo SPAZIO_DISPONIBILE, e Signal_Sem() sul semaforo MESSAGGIO_DISPONIBILE."
+    severity: ERROR
+    languages: [c]
+    pattern-either:
+      - pattern: |
+          int inizializza_semafori()
+          {
+            $SEM_ID = semget(...);
+            ...
+            semctl($SEM_ID,$MSG_DISP,SETVAL,0);
+            ...
+            return $SEM_ID;
+          }
+          void figlio(...)
+          {
+            ...
+            Wait_Sem(...,$MSG_DISP);
+            ...
+          }
+      - pattern: |
+          int inizializza_semafori()
+          {
+            $SEM_ID = semget(...);
+            ...
+            semctl($SEM_ID,$SPAZIO_DISP,SETVAL,1);
+            ...
+            return $SEM_ID;
+          }
+          void figlio(...)
+          {
+            ...
+            Signal_Sem(...,$SPAZIO_DISP);
+            ...
+          }
+
+
+  - id: uso-semafori-consumatore
+    message: "Errato utilizzo dei semafori. È necessario che il consumatore effettui Wait_Sem() sul semaforo MESSAGGIO_DISPONIBILE, e Signal_Sem() sul semaforo SPAZIO_DISPONIBILE."
+    severity: ERROR
+    languages: [c]
+    pattern-either:
+      - pattern: |
+          int inizializza_semafori()
+          {
+            $SEM_ID = semget(...);
+            ...
+            semctl($SEM_ID,$SPAZIO_DISP,SETVAL,1);
+            ...
+            return $SEM_ID;
+          }
+          ...
+          void padre(...)
+          {
+            ...
+            Wait_Sem(...,$SPAZIO_DISP);
+            ...
+          }
+      - pattern: |
+          int inizializza_semafori()
+          {
+            $SEM_ID = semget(...);
+            ...
+            semctl($SEM_ID,$MSG_DISP,SETVAL,0);
+            ...
+            return $SEM_ID;
+          }
+          ...
+          void padre(...)
+          {
+            ...
+            Signal_Sem(...,$MSG_DISP);
+            ...
+          }

@@ -33,6 +33,8 @@ void figlio(int *vettore,
             int qta_elementi)
 {
 
+    printf("[FIGLIO] Ricerca del minimo: elementi da %d a %d\n", elemento_iniziale, elemento_iniziale + qta_elementi - 1);
+
     /* TBD: aggiungere dentro questa funzione delle chiamate a
      *      Wait_Sem() e Signal_Sem() per creare una sezione critica
      *      e realizzare la mutua esclusione */
@@ -49,7 +51,7 @@ void figlio(int *vettore,
         }
     }
 
-    printf("Figlio: Il minimo locale è %d\n", minimo);
+    printf("[FIGLIO] Il minimo locale è %d\n", minimo);
 
     if (minimo < *buffer)
     {
@@ -67,9 +69,9 @@ void padre(int *buffer,
 
     /* TBD: Utilizzare wait() per attendere la terminazione dei 10 figli */
 
-    
+
 
     /* Risultato finale */
 
-    printf("Padre: Il valore minimo assoluto è: %d\n", *buffer);
+    printf("[PADRE] Il valore minimo assoluto è: %d\n", *buffer);
 }

@@ -1,0 +1,77 @@
+rules:
+  - id: semget-secondo-parametro
+    languages:
+      - c
+    severity: ERROR
+    message: "In questo esercizio, è richiesto utilizzare un solo semaforo. Utilizzare 1 come secondo parametro della funzione semget()"
+    patterns:
+      - pattern: semget(IPC_PRIVATE, $VAR, ...)
+      - metavariable-pattern:
+          metavariable: $VAR
+          patterns:
+            - pattern-not: "1"
+
+  - id: waitsem-secondo-parametro
+    languages:
+      - c
+    severity: ERROR
+    message: "In questo esercizio, si utilizza un solo semaforo, il cui indice è 0 (come per gli array, il primo semaforo creato da semget ha indice 0).
+    Quindi, occorre che il secondo parametro della funzione Wait_Sem() sia 0."
+    patterns:
+      - pattern: Wait_Sem($SEM_ID,$VAL)
+      - metavariable-pattern:
+          metavariable: $VAL
+          patterns:
+            - pattern-not: "0"
+
+  - id: wait-signal-dopo-for-loop
+    message: "In questo esercizio, nella funzione figlio(), la sezione critica è formata dallo IF e le istruzioni al suo interno.
+    Il ciclo FOR non accede a dati condivisi (ogni processo utilizza una parte diversa del vettore).
+    Quindi, le funzioni Wait_Sem() e Signal_Sem() devono essere posizionate DOPO il ciclo FOR, con Wait_Sem() prima dello IF,
+    e Signal_Sem() dopo lo IF."
+    severity: ERROR
+    languages: [c]
+    patterns:
+      - pattern: |
+          void figlio(...){
+            ...
+            Wait_Sem(...);
+            ...
+            Signal_Sem(...);
+            ...
+          }
+      - pattern-not: |
+          void figlio(...){
+            ...
+            for(int $I = 0; $I < $N; $I++) {
+              ...
+            }
+            ...
+            Wait_Sem(...);
+            if($CONDIZIONE){
+              ...
+            }
+            Signal_Sem(...);
+            ...
+          }
+
+  - id: inizializzazione-semaforo-mancante
+    message: "La inizializzazione del semaforo con semctl() è errata o mancante.
+    Controllare l'utilizzo corretto di semctl()."
+    severity: ERROR
+    languages: [c]
+    patterns:
+      - pattern: |
+          int inizializza_semafori()
+          {
+            ...
+          }
+      - pattern-not: |
+          int inizializza_semafori()
+          {
+            $SEM_ID = semget(...);
+            ...
+            semctl($SEM_ID,0,SETVAL,1);
+            ...
+            return $SEM_ID;
+          }

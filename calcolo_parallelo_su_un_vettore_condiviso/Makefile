@@ -21,3 +21,8 @@ clean:
 	rm -f minimo-mutua-esclusione
 	rm -f minimo-prod-cons
 
+test: minimo-mutua-esclusione minimo-prod-cons
+	.test/run-processi-mutua-esclusione.sh
+	.test/semgrep-processi-mutua-esclusione.sh
+	.test/run-processi-prod-cons.sh
+	.test/semgrep-processi-prod-cons.sh
