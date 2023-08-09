@@ -18,7 +18,7 @@ BINARY=../minimo-prod-cons
 OUTPUT=/tmp/minimo.txt
 
 
-if [ ! -e $BINARY ]
+if ! make -C .. minimo-prod-cons;
 then
     failure
 fi

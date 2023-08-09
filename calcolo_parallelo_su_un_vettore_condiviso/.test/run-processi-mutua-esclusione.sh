@@ -18,7 +18,7 @@ BINARY=../minimo-mutua-esclusione
 OUTPUT=/tmp/minimo.txt
 
 
-if [ ! -e $BINARY ]
+if ! make -C .. minimo-mutua-esclusione;
 then
     failure
 fi
