@@ -1,0 +1,139 @@
+name: GitHub Classroom Workflow
+
+on:
+  push:
+    branches:
+    - '*'
+    - '!badges'
+
+env:
+  FEEDBACK_TEMPLATE_PATH: ".github/templates/feedback.md"
+  GRADING_FEEDBACK_TEMPFILE_PATH: "/tmp/feedback.md"
+
+jobs:
+  build:
+    name: Autograding
+    runs-on: ubuntu-22.04
+    if: ${{ !contains(github.event.head_commit.author.name, '[bot]') }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+
+      # reset feedback.md contents
+      - run: echo "" > $GRADING_FEEDBACK_TEMPFILE_PATH
+
+      # run grading
+      # add id to step so outputs can be referenced
+      - uses: education/autograding@v1
+        name: "** Grading and Feedback **"
+        id: autograder
+        continue-on-error: true
+
+      # need to parse line endings
+      # see https://github.community/t/set-output-truncates-multiline-strings/16852/3
+      - name: parse feedback.md to step output
+        id: feedback
+        run: |
+          message=`cat $GRADING_FEEDBACK_TEMPFILE_PATH`
+          message="${message//'%'/'%25'}"
+          message="${message//$'\n'/'%0A'}"
+          message="${message//$'\r'/'%0D'}"
+          echo "::set-output name=message::$message"
+
+      # fail job if autograder returns failed
+      # outcome can be 'success', 'failure', 'cancelled', or 'skipped'
+      # trigger fail either on !success or on failure depending on preference
+      - name: check autograder pass fail
+        if: ${{ steps.autograder.outcome != 'success' }}
+        run: exit 1
+
+    outputs:
+      grading-score: ${{ steps.autograder.outputs.Points }}
+      feedback-message: ${{ steps.feedback.outputs.message }}
+
+  # job to post feedback message in Feedback PR
+  # Classroom will create the PR when assignment accepted. PR should be issue 1.
+  post-feedback:
+    name: Post Feedback Comment
+    runs-on: ubuntu-22.04
+    if: ${{ always() && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.author.name, '[bot]') }}
+    needs: build
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: prepare comment and substitute tokens
+        id: prep
+        uses: actions/github-script@v3
+        env:
+          test-output: ${{ needs.build.outputs.feedback-message }}
+          points: ${{ needs.build.outputs.grading-score }}
+        with:
+          script: |
+            const fs = require('fs')
+            let commentBody = fs.readFileSync(process.env.FEEDBACK_TEMPLATE_PATH, "utf8")
+
+            for (envName in process.env) {
+              commentBody = commentBody.replace("${"+envName+"}", process.env[envName])
+            }
+
+            return commentBody
+          result-encoding: string
+
+      - name: post comment
+        uses: actions/github-script@v3
+        env:
+          body: ${{ steps.prep.outputs.result }}
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const { body } = process.env
+            const commentBody = `${body}`
+            github.issues.createComment({
+              issue_number: '1',
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: commentBody
+            })
+
+  # job to build custom status badges
+  build-badges:
+    name: Build Points Badge
+    runs-on: ubuntu-22.04
+    if: always()
+    needs: build
+    steps:
+      # need to checkout whole repo
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # switch to badges branch
+      - run: git checkout badges || git checkout -b badges
+
+      # make dir for badges
+      - name: make badges dir
+        run: mkdir -p .github/badges
+
+      # make points badge
+      - name: make points badge
+        uses: emibcn/badge-action@v1
+        with:
+          LABEL: 'Points'
+          STATUS: ${{ needs.build.outputs.grading-score }}
+          COLOR: cyan
+          path: '.github/badges/points.svg'
+
+      # commit and push badge if score has changed
+      - name: Commit badge
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add '.github/badges'
+          git commit -m "Add/Update badge"
+        continue-on-error: true
+      - name: Push badge commit
+        uses: ad-m/github-push-action@master
+        if: ${{ success() }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: badges

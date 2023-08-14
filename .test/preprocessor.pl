@@ -1,20 +1,49 @@
-#!/usr/bin/perl -pi
+#!/usr/bin/perl
 
-BEGIN {
-    %defines=();
-    open(SOURCE,"<", $ARGV[0]);
-    while(<SOURCE>) {
-        if(/#(?:define|DEFINE)\s+(\w+)\s+(.*)/) {
-            $defines{$1} = $2;
+%defines=();
+
+open(SOURCE,"+<", $ARGV[0]) or die "Opening: $!";
+
+@SOURCE = <SOURCE>;
+@NEW_SOURCE = ();
+
+while($_ = shift @SOURCE) {
+
+    if(/#(?:define|DEFINE)\s+(\w+)\s+(.*)/) {
+        $defines{$1} = $2;
+        next;
+    }
+
+    if(!/#(?:define|DEFINE)/) {
+
+        foreach $define (keys %defines) {
+
+            s/$define/$defines{$define}/g;
         }
     }
-    close(SOURCE);
-}
 
-if(!/#(?:define|DEFINE)/) {
+    if(/#(?:include|INCLUDE)\s"(.*)"/) {
 
-    foreach $define (keys %defines) {
+        open(INCLUDE,"<",$1) or die "Opening: $!";
 
-        s/$define/$defines{$define}/g;
+        @INCLUDE = <INCLUDE>;
+
+        while($include = pop @INCLUDE) {
+            unshift @SOURCE, $include;
+        }
+
+        close(INCLUDE);
+
+        next;
     }
+
+    push @NEW_SOURCE, $_;
+
 }
+
+
+seek(SOURCE,0,0)              or die "Seeking: $!";
+print SOURCE @NEW_SOURCE      or die "Printing: $!";
+truncate(SOURCE,tell(SOURCE)) or die "Truncating: $!";
+close(SOURCE)                 or die "Closing: $!";
+

@@ -1,0 +1,57 @@
+rules:
+  - id: utilizzo-ftok-shmget
+    languages:
+      - c
+    severity: ERROR
+    message: "In questo esercizio, è necessario utilizzare ftok() per le chiavi delle risorse. I processi figli devono ottenere la stessa risorsa che è stata creata dal processo padre. Con IPC_PRIVATE, viene creata una nuova risorsa ad ogni operazione di shmget."
+    patterns:
+      - pattern: $VAR = shmget(...);
+      - pattern-not: $VAR = shmget(ftok(...), ...);
+      - pattern-not-inside: |                                       # patter-not-inside: utile per trovare match come assenza di close() dopo una open() etc, esempio: https://semgrep.dev/playground/s/DJ6G?editorMode=advanced
+          $FIRST_PARAM = ftok(...);
+          $VAR = shmget($FIRST_PARAM, ...);
+
+  - id: utilizzo-ftok-semget
+    languages:
+      - c
+    severity: ERROR
+    message: "In questo esercizio, è necessario utilizzare ftok() per le chiavi delle risorse. I processi figli devono ottenere la stessa risorsa che è stata creata dal processo padre. Con IPC_PRIVATE, viene creata una nuova risorsa ad ogni operazione di semget."
+    patterns:
+      - pattern: $VAR = semget(...);
+      - pattern-not: $VAR = semget(ftok(...), ...);
+      - pattern-not-inside: |                                        # patter-not-inside: utile per trovare match come assenza di close() dopo una open() etc, esempio: https://semgrep.dev/playground/s/DJ6G?editorMode=advanced
+          $FIRST_PARAM = ftok(...);
+          $VAR = semget($FIRST_PARAM, ...);
+
+  - id: permessi-shmget-non-necessari
+    languages:
+      - c
+    severity: WARNING
+    message: "Nei processi figli, non è necessario indicare i permessi in shmget(), poiché i permessi sono stati già assegnati al momento della creazione della risorsa da parte del processo padre. È sufficiente passare 0 come terzo parametro."
+    patterns:
+      - pattern: $VAR = shmget($FIRST_PARAM, $SECOND_PARAM, $THIRD_PARAM);
+      - metavariable-pattern:
+          metavariable: $THIRD_PARAM
+          patterns:
+            - pattern-not: "0"
+
+  - id: permessi-semget-non-necessari
+    languages:
+      - c
+    severity: WARNING
+    message: "Nei processi figli, non è necessario indicare i permessi in semget(), poiché i permessi sono stati già assegnati al momento della creazione della risorsa da parte del processo padre. È sufficiente passare 0 come terzo parametro."
+    patterns:
+      - pattern: $VAR = semget($FIRST_PARAM, $SECOND_PARAM, $THIRD_PARAM);
+      - metavariable-pattern:
+          metavariable: $THIRD_PARAM
+          patterns:
+            - pattern-not: "0"
+
+  - id: percorso-ftok
+    languages:
+      - c
+    severity: ERROR
+    message: "In ftok(), utilizzare il percorso relativo alla cartella del progetto (\".\") oppure ad uno degli eseguibili del progetto. Questa accortenza è necessaria per fare in modo che il programma sia in grado di eseguire anche su un computer diverso da quello usato nello sviluppo (in cui i percorsi delle cartelle potrebbero essere diversi)."
+    patterns:
+      - pattern: ftok($KEY, ...);
+      - pattern-not-regex: (\.|\./main-padre|\./main-consumatore|\./main-produttore)

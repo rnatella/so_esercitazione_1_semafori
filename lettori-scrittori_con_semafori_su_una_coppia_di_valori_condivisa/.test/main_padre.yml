@@ -1,0 +1,70 @@
+rules:
+  - id: creazione-semafori-errata
+    message: "Creazione dei semafori errata.
+    Per risolvere l'esercizio, è necessario creare i semafori richiesti dall'algoritmo visto a lezione."
+    severity: ERROR
+    languages: [c]
+    patterns:
+      - pattern: |
+          semget(...);
+
+      - pattern-not-inside: |
+          $SEM_ID = semget(..., 2, ...);
+          ...
+          semctl($SEM_ID,...);
+          ...
+          semctl($SEM_ID,...);
+
+  - id: inizializzazione-semafori-errata
+    message: "Inizializzazione dei semafori mancante o errata.
+    Per risolvere l'esercizio, è necessario inizializzare i semafori come indicato nell'algoritmo visto a lezione."
+    severity: ERROR
+    languages: [c]
+    patterns:
+      - pattern: |
+          semctl(...,SETVAL,...);
+          ...
+          semctl(...,SETVAL,...);
+
+      - pattern-not: |
+          semctl(...,SETVAL,1);
+          ...
+          semctl(...,SETVAL,1);
+
+      - pattern-not: |
+          semctl(...,SETVAL,1);
+          ...
+          semctl(...,SETVAL,1);
+
+  - id: utilizzo-ftok-shmget
+    languages:
+      - c
+    severity: ERROR
+    message: "In questo esercizio, è necessario utilizzare ftok() per le chiavi delle risorse, per fare in modo che tutte le chiamate a shmget() ottengano la stessa risorsa condivisa. I processi figli devono ottenere la stessa risorsa che è stata creata dal processo padre. Con IPC_PRIVATE, viene creata una nuova risorsa ad ogni operazione di shmget()."
+    patterns:
+      - pattern: $VAR = shmget(...);
+      - pattern-not: $VAR = shmget(ftok(...), ...);
+      - pattern-not-inside: |
+          $FIRST_PARAM = ftok(...);
+          $VAR = shmget($FIRST_PARAM, ...);
+
+  - id: utilizzo-ftok-semget
+    languages:
+      - c
+    severity: ERROR
+    message: "In questo esercizio, è necessario utilizzare ftok() per le chiavi delle risorse, per fare in modo che tutte le chiamate a semget() ottengano la stessa risorsa condivisa. I processi figli devono ottenere la stessa risorsa che è stata creata dal processo padre. Con IPC_PRIVATE, viene creata una nuova risorsa ad ogni operazione di semget()."
+    patterns:
+      - pattern: $VAR = semget(...);
+      - pattern-not: $VAR = semget(ftok(...), ...);
+      - pattern-not-inside: |
+          $FIRST_PARAM = ftok(...);
+          $VAR = semget($FIRST_PARAM, ...);
+
+  - id: percorso-ftok
+    languages:
+      - c
+    severity: ERROR
+    message: "In ftok(), utilizzare il percorso relativo alla cartella del progetto (\".\") oppure ad uno degli eseguibili del progetto. Questa accortenza è necessaria per fare in modo che il programma sia in grado di eseguire anche su un computer diverso da quello usato nello sviluppo (in cui i percorsi delle cartelle potrebbero essere diversi)."
+    patterns:
+      - pattern: ftok($KEY, ...);
+      - pattern-not-regex: (\.|\./main_padre|\./main_lettori|\./main_scrittore)

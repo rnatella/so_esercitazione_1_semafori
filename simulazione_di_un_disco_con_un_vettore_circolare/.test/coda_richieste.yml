@@ -1,0 +1,107 @@
+rules:
+  - id: numero-di-semafori-semget
+    languages:
+      - c
+    severity: ERROR
+    message: "Numero di semafori errato. In questo esercizio, bisogna utilizzare un semaforo per \"spazio disponibile\", un semaforo per \"messaggio disponibile\", e un semaforo per la mutua esclusione tra i produttori. Non è obbligatorio avere un semaforo per la mutua esclusione tra i consumatori (in questo esercizio vi è un solo consumatore)."
+    patterns:
+      - pattern: sem_id = semget($KEY, $NUM_SEMAFORI, $FLAGS);
+      - metavariable-pattern:
+          metavariable: $NUM_SEMAFORI
+          patterns:
+            - pattern-not: "4"
+            - pattern-not: "3"
+
+  - id: inizializzazione-semafori
+    languages:
+      - c
+    severity: ERROR
+    message: "Errata inizializzazione dei semafori. In questo esercizio, il semaforo per \"spazio disponibile\" deve essere inizializzato con il numero di buffer (10), il semaforo \"messaggio disponibile\" deve essere ininzializzato a 0, e i semafori per la mutua esclusione (MUTEXC, MUTEXP) inizializzati ad 1."
+    patterns:
+      - pattern: |
+          coda_richieste* inizializza_coda(...) {
+            ...
+            semctl($SEMID, $SEM, SETVAL, $INIT);
+            ...
+          }
+      - metavariable-pattern:
+          metavariable: $INIT
+          patterns:
+            - pattern-not: "10"
+            - pattern-not: "0"
+            - pattern-not: "1"
+
+  - id: mutua-esclusione-msgdisp-spaziodisp-produttori
+    languages:
+      - c
+    severity: ERROR
+    message: "La sincronizzazione nei produttori è non corretta o mancante. Utilizzare i semafori e le funzioni Wait_Sem() e Signal_Sem(), come indicato nell'algoritmo visto al corso."
+    patterns:
+      - pattern: |
+          void inserisci_richiesta(...)
+          {
+            ...
+          }
+      - pattern-not: |
+          void inserisci_richiesta(...)
+          {
+            ...
+            Wait_Sem(...,$SPAZIO_DISPONIBILE);
+            Wait_Sem(...,$MUTEXP);
+            ...
+            Signal_Sem(...,$MUTEXP);
+            Signal_Sem(...,$MESSAGGIO_DISPONIBILE);
+            ...
+          }
+
+  - id: incremento-coda-mancante
+    languages:
+      - c
+    severity: ERROR
+    message: "Nel consumatore, è necessario incrementare la variabile \"coda\", con la divisione in modulo."
+    patterns:
+      - pattern: |
+          void preleva_richiesta(...)
+          {
+            ...
+          }
+      - pattern-not: |
+          void preleva_richiesta(...)
+          {
+            ...
+            c->coda = (c->coda + 1) % $DIM;
+            ...
+          }
+      - pattern-not: |
+          void preleva_richiesta(...)
+          {
+            ...
+            c->coda = (c->coda++) % $DIM;
+            ...
+          }
+
+  - id: incremento-testa-mancante
+    languages:
+      - c
+    severity: ERROR
+    message: "Nel produttore, è necessario incrementare la variabile \"testa\", con la divisione in modulo."
+    patterns:
+      - pattern: |
+          void inserisci_richiesta(...)
+          {
+            ...
+          }
+      - pattern-not: |
+          void inserisci_richiesta(...)
+          {
+            ...
+            c->testa = (c->testa + 1) % $DIM;
+            ...
+          }
+      - pattern-not: |
+          void inserisci_richiesta(...)
+          {
+            ...
+            c->testa = (c->testa++) % $DIM;
+            ...
+          }

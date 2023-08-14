@@ -1,0 +1,54 @@
+{
+  "tests": [
+    {
+      "name": "Calcolo vettore condiviso, con mutua esclusione",
+      "setup": "pip3 -qqq install semgrep && sudo apt -qq install expect 2>/dev/null >/dev/null",
+      "run": "/bin/bash ./calcolo_parallelo_su_un_vettore_condiviso/.test/processi-mutua-esclusione.sh",
+      "input": "",
+      "output": "pass",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Calcolo vettore condiviso, con produttore-consumatore",
+      "setup": "",
+      "run": "/bin/bash  ./calcolo_parallelo_su_un_vettore_condiviso/.test/processi-prod-cons.sh",
+      "input": "",
+      "output": "pass",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Produttore-consumatore con coppia di buffer",
+      "setup": "",
+      "run": "/bin/bash  ./coppia_di_buffer/.test/coppia_di_buffer.sh",
+      "input": "",
+      "output": "pass",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Lettori-scrittore su una coppia di valori condivisa",
+      "setup": "",
+      "run": "/bin/bash  ./lettori-scrittori_con_semafori_su_una_coppia_di_valori_condivisa/.test/lettori-scrittori.sh",
+      "input": "",
+      "output": "pass",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 1
+    },
+    {
+      "name": "Simulatore di un disco, con semafori",
+      "setup": "",
+      "run": "/bin/bash  ./simulazione_di_un_disco_con_un_vettore_circolare/.test/simulazione_disco_semafori.sh",
+      "input": "",
+      "output": "pass",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 1
+    }
+  ]
+}

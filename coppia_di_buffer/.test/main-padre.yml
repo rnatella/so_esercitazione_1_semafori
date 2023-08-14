@@ -1,0 +1,71 @@
+rules:
+  - id: creazione-semafori-errata
+    message: "Creazione dei semafori errata.
+    È necessario creare un vettore di due semafori (SPAZIO_DISPONIBILE e MESSAGGIO_DISPONIBILE), ed inizializzarli. Controllare che le funzioni semget() e semctl() siano state usate correttamente."
+    severity: ERROR
+    languages: [c]
+    patterns:
+      - pattern: |
+          $SEM_ID = semget(...);
+
+      - pattern-not-inside: |
+          $SEM_ID = semget(..., 2, ...);
+          ...
+          semctl($SEM_ID,...);
+          ...
+          semctl($SEM_ID,...);
+
+  - id: inizializzazione-semafori-errata
+    message: "Inizializzazione dei semafori errata.
+    Notare che in questo esercizio ci sono due buffer: per cui, il semaforo SPAZIO_DISPONIBILE deve essere inizializzato a 2, e il semaforo MESSAGGIO_DISPONIBILE deve essere inizializzato a 0.
+    Controllare che la funzione semctl() sia stata utilizzata correttamente."
+    severity: ERROR
+    languages: [c]
+    patterns:
+      - pattern: |
+          semctl(...,SETVAL,...);
+          ...
+          semctl(...,SETVAL,...);
+
+      - pattern-not: |
+          semctl(...,SETVAL,0);
+          ...
+          semctl(...,SETVAL,2);
+
+      - pattern-not: |
+          semctl(...,SETVAL,2);
+          ...
+          semctl(...,SETVAL,0);
+
+  - id: utilizzo-ftok-shmget
+    languages:
+      - c
+    severity: ERROR
+    message: "In questo esercizio, è necessario utilizzare ftok() per le chiavi delle risorse. I processi figli devono ottenere la stessa risorsa che è stata creata dal processo padre. Con IPC_PRIVATE, viene creata una nuova risorsa ad ogni operazione di shmget."
+    patterns:
+      - pattern: $VAR = shmget(...);
+      - pattern-not: $VAR = shmget(ftok(...), ...);
+      - pattern-not-inside: |                                       # patter-not-inside: utile per trovare match come assenza di close() dopo una open() etc, esempio: https://semgrep.dev/playground/s/DJ6G?editorMode=advanced
+          $FIRST_PARAM = ftok(...);
+          $VAR = shmget($FIRST_PARAM, ...);
+
+  - id: utilizzo-ftok-semget
+    languages:
+      - c
+    severity: ERROR
+    message: "In questo esercizio, è necessario utilizzare ftok() per le chiavi delle risorse. I processi figli devono ottenere la stessa risorsa che è stata creata dal processo padre. Con IPC_PRIVATE, viene creata una nuova risorsa ad ogni operazione di semget."
+    patterns:
+      - pattern: $VAR = semget(...);
+      - pattern-not: $VAR = semget(ftok(...), ...);
+      - pattern-not-inside: |                                        # patter-not-inside: utile per trovare match come assenza di close() dopo una open() etc, esempio: https://semgrep.dev/playground/s/DJ6G?editorMode=advanced
+          $FIRST_PARAM = ftok(...);
+          $VAR = semget($FIRST_PARAM, ...);
+
+  - id: percorso-ftok
+    languages:
+      - c
+    severity: ERROR
+    message: "In ftok(), utilizzare il percorso relativo alla cartella del progetto (\".\") oppure ad uno degli eseguibili del progetto. Questa accortenza è necessaria per fare in modo che il programma sia in grado di eseguire anche su un computer diverso da quello usato nello sviluppo (in cui i percorsi delle cartelle potrebbero essere diversi)."
+    patterns:
+      - pattern: ftok($KEY, ...);
+      - pattern-not-regex: (\.|\./main-padre|\./main-consumatore|\./main-produttore)

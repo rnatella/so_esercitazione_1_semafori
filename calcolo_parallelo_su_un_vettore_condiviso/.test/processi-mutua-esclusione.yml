@@ -3,13 +3,68 @@ rules:
     languages:
       - c
     severity: ERROR
-    message: "In questo esercizio, è richiesto utilizzare un solo semaforo. Utilizzare 1 come secondo parametro della funzione semget()"
+    message: "In questo esercizio, è richiesto utilizzare un solo semaforo. Utilizzare 1 come secondo parametro della funzione semget()."
     patterns:
-      - pattern: semget(IPC_PRIVATE, $VAR, ...)
+      - pattern: semget($KEY, $VAR, ...)
       - metavariable-pattern:
           metavariable: $VAR
           patterns:
             - pattern-not: "1"
+
+  - id: inizializzazione-semaforo-mancante
+    message: "La inizializzazione del semaforo con semctl() è errata o mancante.
+    Controllare l'utilizzo corretto di semctl()."
+    severity: ERROR
+    languages: [c]
+    patterns:
+      - pattern: |
+          int inizializza_semafori()
+          {
+            ...
+          }
+      - pattern-not: |
+          int inizializza_semafori()
+          {
+            $SEM_ID = semget(...);
+            ...
+            semctl($SEM_ID,0,SETVAL,1);
+            ...
+            return $SEM_ID;
+          }
+
+  - id: wait-signal-utilizzo-figli
+    message: "È richiesta la sincronizzazione nei processi figli. Inserire le funzioni Wait_Sem() e Signal_Sem() nei punti necessari alla sincronizzazione."
+    severity: ERROR
+    languages: [c]
+    patterns:
+      - pattern: |
+          void figlio(...) {
+            ...
+          }
+      - pattern-not: |
+          void figlio(...) {
+            ...
+            Wait_Sem(...);
+            ...
+            Signal_Sem(...);
+            ...
+          }
+
+  - id: wait-signal-utilizzo-padre
+    message: "In questo esercizio, il processo padre NON deve utilizzare le funzioni Wait_Sem() e Signal_Sem().
+    È sufficiente che il padre si ponga in attesa della terminazione dei processi figli, tramite wait().
+    Dopo l'attesa, il processo padre sarà l'unico ancora in esecuzione, e potrà accedere al buffer senza altre operazioni di sincronizzazione."
+    severity: ERROR
+    languages: [c]
+    patterns:
+      - pattern: |
+          void padre(...) {
+            ...
+            Wait_Sem(...);
+            ...
+            Signal_Sem(...);
+            ...
+          }
 
   - id: waitsem-secondo-parametro
     languages:
@@ -55,23 +110,3 @@ rules:
             ...
           }
 
-  - id: inizializzazione-semaforo-mancante
-    message: "La inizializzazione del semaforo con semctl() è errata o mancante.
-    Controllare l'utilizzo corretto di semctl()."
-    severity: ERROR
-    languages: [c]
-    patterns:
-      - pattern: |
-          int inizializza_semafori()
-          {
-            ...
-          }
-      - pattern-not: |
-          int inizializza_semafori()
-          {
-            $SEM_ID = semget(...);
-            ...
-            semctl($SEM_ID,0,SETVAL,1);
-            ...
-            return $SEM_ID;
-          }

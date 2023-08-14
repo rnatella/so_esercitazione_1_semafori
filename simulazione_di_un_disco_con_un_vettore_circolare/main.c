@@ -59,4 +59,7 @@ int main()
 
 
     /* TBD: Attesa terminazione processi figli */
+
+
+    /* TBD: De-allocazione coda richieste, chiamando "rimuovi_coda()" */
 }
