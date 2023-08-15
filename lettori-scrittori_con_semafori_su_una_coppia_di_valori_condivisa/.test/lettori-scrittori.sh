@@ -5,6 +5,7 @@ source $(dirname "$0")/../../.test/test.sh
 BINARY=main_padre
 OUTPUT=/tmp/output.txt
 TIMEOUT=30
+SKIPPED=0
 
 
 init_feedback "Esercizio lettori-scrittori"

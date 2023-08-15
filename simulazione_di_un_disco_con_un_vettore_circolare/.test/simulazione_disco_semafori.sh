@@ -5,6 +5,7 @@ source $(dirname "$0")/../../.test/test.sh
 BINARY=programma
 OUTPUT=/tmp/output.txt
 TIMEOUT=240
+SKIPPED=0
 
 
 init_feedback "Esercizio simulazione disco, con semafori"

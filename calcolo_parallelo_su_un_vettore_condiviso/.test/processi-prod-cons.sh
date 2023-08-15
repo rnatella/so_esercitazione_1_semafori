@@ -6,6 +6,7 @@ BINARY=minimo-prod-cons
 OUTPUT=/tmp/minimo.txt
 TIMEOUT=30
 MAKE_RULE=$BINARY
+SKIPPED=0
 
 
 init_feedback "Esercizio calcolo parallelo su vettore condiviso, con produttore-consumatore"

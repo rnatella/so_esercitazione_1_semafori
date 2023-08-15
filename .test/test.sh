@@ -156,11 +156,27 @@ function success() {
 }
 
 
+function skipped() {
+
+    FEEDBACK+=":fast_forward: La verifica automatica è stata disattivata per questo esercizio\n"
+
+    printf "$FEEDBACK" >> $FEEDBACKFILE_PATH
+
+    echo "pass"
+    exit 0
+}
+
+
 function init_feedback() {
 
     MSG=$1
 
     FEEDBACK="\n## $MSG\n\n"
+
+    if [[ $SKIPPED != 0 ]]
+    then
+        skipped
+    fi
 }
 
 
@@ -170,4 +186,5 @@ export SOURCEDIR=$TESTDIR/..
 export FEEDBACKFILE_PATH=/tmp/feedback.md
 export FEEDBACK=
 
+export SKIPPED=0
 
