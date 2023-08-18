@@ -90,6 +90,9 @@ function compile_and_run() {
 }
 
 
+# https://unix.stackexchange.com/a/426817
+shopt -s nullglob
+
 function static_analysis() {
 
     CONFIG_FILES=("$@")
