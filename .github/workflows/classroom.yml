@@ -34,11 +34,9 @@ jobs:
       - name: parse feedback.md to step output
         id: feedback
         run: |
-          message=`cat $GRADING_FEEDBACK_TEMPFILE_PATH`
-          message="${message//'%'/'%25'}"
-          message="${message//$'\n'/'%0A'}"
-          message="${message//$'\r'/'%0D'}"
-          echo "::set-output name=message::$message"
+          echo 'message<<EOF' >> $GITHUB_OUTPUT
+          cat $GRADING_FEEDBACK_TEMPFILE_PATH >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
 
       # fail job if autograder returns failed
       # outcome can be 'success', 'failure', 'cancelled', or 'skipped'
