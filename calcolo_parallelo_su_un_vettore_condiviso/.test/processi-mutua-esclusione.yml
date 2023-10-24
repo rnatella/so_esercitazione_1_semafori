@@ -25,6 +25,7 @@ rules:
       - pattern-not: |
           int inizializza_semafori()
           {
+            ...
             $SEM_ID = semget(...);
             ...
             semctl($SEM_ID,0,SETVAL,1);

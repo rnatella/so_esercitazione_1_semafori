@@ -112,6 +112,7 @@ rules:
       - pattern-not: |
           int inizializza_semafori()
           {
+            ...
             $SEM_ID = semget(...,2,...);
             ...
             semctl($SEM_ID,...,SETVAL,0);
@@ -122,6 +123,7 @@ rules:
       - pattern-not: |
           int inizializza_semafori()
           {
+            ...
             $SEM_ID = semget(...,2,...);
             ...
             semctl($SEM_ID,...,SETVAL,1);
@@ -138,6 +140,7 @@ rules:
       - pattern: |
           int inizializza_semafori()
           {
+            ...
             $SEM_ID = semget(...);
             ...
             semctl($SEM_ID,$MSG_DISP,SETVAL,0);
@@ -153,6 +156,7 @@ rules:
       - pattern: |
           int inizializza_semafori()
           {
+            ...
             $SEM_ID = semget(...);
             ...
             semctl($SEM_ID,$SPAZIO_DISP,SETVAL,1);
@@ -175,6 +179,7 @@ rules:
       - pattern: |
           int inizializza_semafori()
           {
+            ...
             $SEM_ID = semget(...);
             ...
             semctl($SEM_ID,$SPAZIO_DISP,SETVAL,1);
@@ -191,6 +196,7 @@ rules:
       - pattern: |
           int inizializza_semafori()
           {
+            ...
             $SEM_ID = semget(...);
             ...
             semctl($SEM_ID,$MSG_DISP,SETVAL,0);
