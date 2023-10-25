@@ -9,6 +9,7 @@ rules:
       - pattern-not: $VAR = shmget(ftok(...), ...);
       - pattern-not-inside: |                                       # patter-not-inside: utile per trovare match come assenza di close() dopo una open() etc, esempio: https://semgrep.dev/playground/s/DJ6G?editorMode=advanced
           $FIRST_PARAM = ftok(...);
+          ...
           $VAR = shmget($FIRST_PARAM, ...);
 
   - id: utilizzo-ftok-semget
@@ -21,6 +22,7 @@ rules:
       - pattern-not: $VAR = semget(ftok(...), ...);
       - pattern-not-inside: |                                        # patter-not-inside: utile per trovare match come assenza di close() dopo una open() etc, esempio: https://semgrep.dev/playground/s/DJ6G?editorMode=advanced
           $FIRST_PARAM = ftok(...);
+          ...
           $VAR = semget($FIRST_PARAM, ...);
 
   - id: permessi-shmget-non-necessari
