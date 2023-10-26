@@ -69,14 +69,14 @@ rules:
           void preleva_richiesta(...)
           {
             ...
-            c->coda = (c->coda + 1) % $DIM;
+            $CODA = ($CODA + 1) % $DIM;
             ...
           }
       - pattern-not: |
           void preleva_richiesta(...)
           {
             ...
-            c->coda = (c->coda++) % $DIM;
+            $CODA = ($CODA++) % $DIM;
             ...
           }
 
@@ -95,13 +95,13 @@ rules:
           void inserisci_richiesta(...)
           {
             ...
-            c->testa = (c->testa + 1) % $DIM;
+            $TESTA = ($TESTA + 1) % $DIM;
             ...
           }
       - pattern-not: |
           void inserisci_richiesta(...)
           {
             ...
-            c->testa = (c->testa++) % $DIM;
+            $TESTA = ($TESTA++) % $DIM;
             ...
           }
