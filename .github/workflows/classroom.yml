@@ -17,7 +17,7 @@ jobs:
     if: ${{ !contains(github.event.head_commit.author.name, '[bot]') }}
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       # reset feedback.md contents
       - run: echo "" > $GRADING_FEEDBACK_TEMPFILE_PATH
@@ -57,11 +57,11 @@ jobs:
     if: ${{ always() && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.author.name, '[bot]') }}
     needs: build
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: prepare comment and substitute tokens
         id: prep
-        uses: actions/github-script@v3
+        uses: actions/github-script@v7
         env:
           test-output: ${{ needs.build.outputs.feedback-message }}
           points: ${{ needs.build.outputs.grading-score }}
@@ -78,7 +78,7 @@ jobs:
           result-encoding: string
 
       - name: post comment
-        uses: actions/github-script@v3
+        uses: actions/github-script@v7
         env:
           body: ${{ steps.prep.outputs.result }}
         with:
@@ -86,7 +86,7 @@ jobs:
           script: |
             const { body } = process.env
             const commentBody = `${body}`
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: '1',
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -97,11 +97,11 @@ jobs:
   build-badges:
     name: Build Points Badge
     runs-on: ubuntu-22.04
-    if: always()
+    if: ${{ always() && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.author.name, '[bot]') }}
     needs: build
     steps:
       # need to checkout whole repo
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
