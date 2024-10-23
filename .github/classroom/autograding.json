@@ -2,7 +2,7 @@
   "tests": [
     {
       "name": "Calcolo vettore condiviso, con mutua esclusione",
-      "setup": "pip3 -qqq install semgrep && sudo apt -qq install expect 2>/dev/null >/dev/null",
+      "setup": "pip3 -qqq install semgrep==1.76.0 && sudo apt -qq install expect 2>/dev/null >/dev/null",
       "run": "/bin/bash ./calcolo_parallelo_su_un_vettore_condiviso/.test/processi-mutua-esclusione.sh",
       "input": "",
       "output": "pass",
